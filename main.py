@@ -18,18 +18,16 @@ from wtforms.validators import DataRequired,Email,Length
 from flask_wtf import FlaskForm
 from datetime import datetime
 
-
-
-
 ##################创建Flask应用实例，配置应用的密钥和数据库链接##################
 #创建一个Flask应用实例
 app = Flask(__name__)
 #设置应用的密钥，用于csrf（跨站请求伪造）保护
 app.secret_key = 'your_secret_key_here'
-#设置数据库链接URL，这里使用MySql数据库
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/mydb'
+# 修改部分：设置数据库链接URL，这里使用SQLite数据库
+# SQLite的数据库文件名为articles.db，存放在应用根目录下
+app.config['SQLALCHEMY_DATABASE_URI'] ='sqlite:///articles.db'
 #初始化SQLAlchemy并绑定到Flask应用
-db=SQLAlchemy(app)
+db = SQLAlchemy(app)
 
 ##############定义数据库模型Article##################
 
@@ -42,7 +40,6 @@ class Article(db.Model):
     #定义一个文本类型的列content,用于存储文章内容，不能为空
     content = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-
 
 ##################创建一个表单类ArticleForm###################
 #创建一个继承自FlaskForm的表单类
@@ -79,9 +76,6 @@ def publish():
     #如果是get请求或表单验证失败，渲染write_article.html模板并传递表单实例
     return render_template('write_article.html',form=form)
 
-
-
-
 ###################定义/articles路由，显示文章列表###############
 #定义一个路由，处理/articles的请求
 @app.route("/articles")
@@ -94,9 +88,9 @@ def article_list():
 ###################在启动时创建数据库，并以调试模式运行应用##################
 
 if __name__ == '__main__':
-    #创建应用上席文，确保可以在应用外部使用数据库操作
+    #创建应用上下文，确保可以在应用外部使用数据库操作
     with app.app_context():
-        #创建所有定义的数据库表单
+        #创建所有定义的数据库表
         db.create_all()
     #以调试模式运行Flask应用
     app.run(debug=True)

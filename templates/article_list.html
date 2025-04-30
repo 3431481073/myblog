@@ -1,18 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>文章列表</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Article List</title>
+    <style>
+        /* 整体布局样式 */
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        /* 文章展示区样式 */
+       .article-item {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px;
+        }
+
+        /* 文章标题样式 */
+       .article-title {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        /* 文章正文样式 */
+       .article-content {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* 右上角添加文章按钮样式 */
+       .add-article-btn {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>文章列表</h1>
+    <a href="{{ url_for('publish') }}">
+        <button class="add-article-btn">+</button>
+    </a>
     {% for article in articles %}
-        <div>
-            <h2>{{ article.title }}</h2>
-            <p>{{ article.content }}</p>
-        </div>
+    <div class="article-item">
+        <a href="{{ url_for('article_detail', article_id=article.id) }}">
+            <h2 class="article-title">{{ article.title }}</h2>
+            <p class="article-content">{{ article.content }}</p>
+        </a>
+    </div>
     {% endfor %}
 </body>
+
 </html>

@@ -14,9 +14,10 @@ from flask import Flask, flash, redirect, url_for, render_template
 from flask_sqlalchemy import SQLAlchemy
 #表单操作
 from wtforms import StringField,TextAreaField,SubmitField
-from wtforms.validators import DataRequired,Email,Length
+from wtforms.validators import DataRequired,Length
 from flask_wtf import FlaskForm
 from datetime import datetime
+
 
 ##################创建Flask应用实例，配置应用的密钥和数据库链接##################
 #创建一个Flask应用实例
@@ -78,6 +79,7 @@ def publish():
 
 ###################定义/articles路由，显示文章列表###############
 #定义一个路由，处理/articles的请求
+@app.route('/')
 @app.route("/articles")
 def article_list():
     #从数据库中查询所有文章记录
@@ -86,6 +88,12 @@ def article_list():
     return render_template("article_list.html", articles=articles)
 
 ###################在启动时创建数据库，并以调试模式运行应用##################
+
+@app.route('/article/<int:article_id>')
+def article_detail(article_id):
+    article = Article.query.get_or_404(article_id)
+    return render_template('article_detail.html', article=article)
+
 
 if __name__ == '__main__':
     #创建应用上下文，确保可以在应用外部使用数据库操作
